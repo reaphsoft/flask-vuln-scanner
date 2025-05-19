@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Search CVE</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <a href="{{ url_for('search_cve') }}">Search CVE</a>
+
+</head>
+<body>
+    <h2>🔍 Search for CVE</h2>
+    <form method="post">
+        <input type="text" name="cve_id" placeholder="Enter CVE ID, e.g., CVE-2021-41773" required>
+        <button type="submit">Search</button>
+    </form>
+
+    {% if result is not none %}
+        <h3>Search Results:</h3>
+        {% if result|length == 0 %}
+            <p>No CVE found.</p>
+        {% elif result.error %}
+            <p>Error: {{ result.error }}</p>
+        {% else %}
+            <pre>{{ result|tojson(indent=2) }}</pre>
+        {% endif %}
+    {% endif %}
+</body>
+</html>

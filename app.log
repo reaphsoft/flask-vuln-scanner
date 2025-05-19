@@ -1,0 +1,122 @@
+2025-05-02 14:04:24,301 [INFO] [NVD Update] Starting update from NVD feed.
+2025-05-02 14:04:26,649 [INFO] [NVD Update] Update successful. Total CVEs loaded: 3021
+2025-05-02 14:45:00,485 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-05-02 14:45:00,485 [INFO] [33mPress CTRL+C to quit[0m
+2025-05-02 14:45:00,488 [INFO]  * Restarting with stat
+2025-05-02 14:45:01,494 [WARNING]  * Debugger is active!
+2025-05-02 14:45:01,515 [INFO]  * Debugger PIN: 481-756-365
+2025-05-02 14:45:28,404 [INFO] 127.0.0.1 - - [02/May/2025 14:45:28] "GET / HTTP/1.1" 200 -
+2025-05-02 14:48:53,702 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-05-02 14:48:53,702 [INFO] [33mPress CTRL+C to quit[0m
+2025-05-02 14:48:53,703 [INFO]  * Restarting with stat
+2025-05-02 14:48:54,317 [WARNING]  * Debugger is active!
+2025-05-02 14:48:54,337 [INFO]  * Debugger PIN: 481-756-365
+2025-05-02 16:35:49,918 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-05-02 16:35:49,919 [INFO] [33mPress CTRL+C to quit[0m
+2025-05-02 16:35:49,921 [INFO]  * Restarting with stat
+2025-05-02 16:35:51,103 [WARNING]  * Debugger is active!
+2025-05-02 16:35:51,151 [INFO]  * Debugger PIN: 131-846-000
+2025-05-02 16:36:57,102 [INFO] 127.0.0.1 - - [02/May/2025 16:36:57] "GET / HTTP/1.1" 200 -
+2025-05-02 17:15:26,676 [INFO]  * Detected change in '/home/mpam/Documents/CiscoCveScanner/scanner.py', reloading
+2025-05-02 17:15:27,110 [INFO]  * Restarting with stat
+2025-05-02 17:15:27,759 [WARNING]  * Debugger is active!
+2025-05-02 17:15:27,766 [INFO]  * Debugger PIN: 131-846-000
+2025-05-02 17:15:34,925 [INFO]  * Detected change in '/home/mpam/Documents/CiscoCveScanner/scanner.py', reloading
+2025-05-02 17:15:35,306 [INFO]  * Restarting with stat
+2025-05-02 17:15:35,903 [WARNING]  * Debugger is active!
+2025-05-02 17:15:35,932 [INFO]  * Debugger PIN: 131-846-000
+2025-05-02 17:15:49,122 [INFO]  * Detected change in '/home/mpam/Documents/CiscoCveScanner/scanner.py', reloading
+2025-05-02 17:15:49,521 [INFO]  * Restarting with stat
+2025-05-02 17:15:50,166 [WARNING]  * Debugger is active!
+2025-05-02 17:15:50,172 [INFO]  * Debugger PIN: 131-846-000
+2025-05-02 17:15:57,060 [INFO] 127.0.0.1 - - [02/May/2025 17:15:57] "GET / HTTP/1.1" 200 -
+2025-05-02 17:18:58,359 [INFO] Downloading https://nvd.nist.gov/feeds/json/cve/1.1/nvdcve-1.1-2021.json.gz
+2025-05-02 17:19:05,194 [INFO] Loaded 23066 CVEs from 2021
+2025-05-02 17:19:05,226 [INFO] Downloading https://nvd.nist.gov/feeds/json/cve/1.1/nvdcve-1.1-2022.json.gz
+2025-05-02 17:19:09,637 [INFO] Loaded 26244 CVEs from 2022
+2025-05-02 17:19:09,661 [INFO] Downloading https://nvd.nist.gov/feeds/json/cve/1.1/nvdcve-1.1-2023.json.gz
+2025-05-02 17:19:14,094 [INFO] Loaded 29564 CVEs from 2023
+2025-05-02 17:19:14,238 [INFO] Downloading https://nvd.nist.gov/feeds/json/cve/1.1/nvdcve-1.1-2024.json.gz
+2025-05-02 17:19:18,687 [INFO] Loaded 37808 CVEs from 2024
+2025-05-02 17:19:18,710 [INFO] Downloading https://nvd.nist.gov/feeds/json/cve/1.1/nvdcve-1.1-2025.json.gz
+2025-05-02 17:19:23,582 [INFO] Loaded 10685 CVEs from 2025
+2025-05-02 17:20:06,510 [INFO] Update complete. Total CVEs loaded: 127367
+2025-05-03 17:59:20,041 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-05-03 17:59:20,041 [INFO] [33mPress CTRL+C to quit[0m
+2025-05-03 17:59:20,043 [INFO]  * Restarting with stat
+2025-05-03 17:59:32,273 [WARNING]  * Debugger is active!
+2025-05-03 17:59:32,330 [INFO]  * Debugger PIN: 109-764-920
+2025-05-03 17:59:32,363 [INFO] 127.0.0.1 - - [03/May/2025 17:59:32] "GET / HTTP/1.1" 200 -
+2025-05-03 21:06:49,074 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-05-03 21:06:49,075 [INFO] [33mPress CTRL+C to quit[0m
+2025-05-03 21:06:49,079 [INFO]  * Restarting with stat
+2025-05-03 21:07:00,687 [WARNING]  * Debugger is active!
+2025-05-03 21:07:00,721 [INFO]  * Debugger PIN: 117-736-752
+2025-05-03 21:07:49,200 [INFO] 127.0.0.1 - - [03/May/2025 21:07:49] "[33mGET /search_cve HTTP/1.1[0m" 404 -
+2025-05-03 21:17:14,303 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-05-03 21:17:14,304 [INFO] [33mPress CTRL+C to quit[0m
+2025-05-03 21:17:14,305 [INFO]  * Restarting with stat
+2025-05-03 21:17:14,909 [WARNING]  * Debugger is active!
+2025-05-03 21:17:14,913 [INFO]  * Debugger PIN: 117-736-752
+2025-05-03 21:17:23,409 [INFO] 127.0.0.1 - - [03/May/2025 21:17:23] "[33mGET /search_cve HTTP/1.1[0m" 404 -
+2025-05-03 21:17:29,624 [INFO] 127.0.0.1 - - [03/May/2025 21:17:29] "GET / HTTP/1.1" 200 -
+2025-05-03 21:18:57,181 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-05-03 21:18:57,181 [INFO] [33mPress CTRL+C to quit[0m
+2025-05-03 21:18:57,182 [INFO]  * Restarting with stat
+2025-05-03 21:18:57,834 [WARNING]  * Debugger is active!
+2025-05-03 21:18:57,839 [INFO]  * Debugger PIN: 117-736-752
+2025-05-06 16:56:34,559 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-05-06 16:56:34,559 [INFO] [33mPress CTRL+C to quit[0m
+2025-05-06 16:56:34,561 [INFO]  * Restarting with stat
+2025-05-06 16:56:35,460 [WARNING]  * Debugger is active!
+2025-05-06 16:56:35,484 [INFO]  * Debugger PIN: 119-221-918
+2025-05-06 16:56:41,215 [INFO] 127.0.0.1 - - [06/May/2025 16:56:41] "GET / HTTP/1.1" 200 -
+2025-05-06 16:56:41,485 [INFO] 127.0.0.1 - - [06/May/2025 16:56:41] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-05-06 16:59:50,888 [INFO]  * Detected change in '/home/mpam/Documents/CiscoCveScanner/scanner.py', reloading
+2025-05-06 16:59:51,108 [INFO]  * Restarting with stat
+2025-05-06 16:59:51,891 [WARNING]  * Debugger is active!
+2025-05-06 16:59:51,897 [INFO]  * Debugger PIN: 119-221-918
+2025-05-06 17:23:33,338 [INFO]  * Detected change in '/home/mpam/Documents/CiscoCveScanner/app.py', reloading
+2025-05-06 17:23:33,553 [INFO]  * Restarting with stat
+2025-05-06 17:23:34,270 [WARNING]  * Debugger is active!
+2025-05-06 17:23:34,274 [INFO]  * Debugger PIN: 119-221-918
+2025-05-06 17:23:35,304 [INFO]  * Detected change in '/home/mpam/Documents/CiscoCveScanner/app.py', reloading
+2025-05-06 17:23:35,520 [INFO]  * Restarting with stat
+2025-05-06 17:23:36,220 [WARNING]  * Debugger is active!
+2025-05-06 17:23:36,224 [INFO]  * Debugger PIN: 119-221-918
+2025-05-06 17:23:52,465 [INFO]  * Detected change in '/home/mpam/Documents/CiscoCveScanner/app.py', reloading
+2025-05-06 17:23:52,695 [INFO]  * Restarting with stat
+2025-05-06 17:23:53,363 [WARNING]  * Debugger is active!
+2025-05-06 17:23:53,367 [INFO]  * Debugger PIN: 119-221-918
+2025-05-06 17:25:09,997 [INFO]  * Detected change in '/home/mpam/Documents/CiscoCveScanner/app.py', reloading
+2025-05-06 17:25:10,607 [INFO]  * Restarting with stat
+2025-05-06 17:25:11,714 [WARNING]  * Debugger is active!
+2025-05-06 17:25:11,718 [INFO]  * Debugger PIN: 119-221-918
+2025-05-06 17:25:14,041 [INFO] 127.0.0.1 - - [06/May/2025 17:25:14] "GET / HTTP/1.1" 200 -
+2025-05-06 17:43:23,253 [INFO]  * Detected change in '/home/mpam/Documents/CiscoCveScanner/app.py', reloading
+2025-05-06 17:43:23,481 [INFO]  * Restarting with stat
+2025-05-06 17:43:24,331 [WARNING]  * Debugger is active!
+2025-05-06 17:43:24,337 [INFO]  * Debugger PIN: 119-221-918
+2025-05-06 17:43:46,636 [INFO]  * Detected change in '/home/mpam/Documents/CiscoCveScanner/celery_worker.py', reloading
+2025-05-06 17:43:46,867 [INFO]  * Restarting with stat
+2025-05-06 17:43:47,543 [WARNING]  * Debugger is active!
+2025-05-06 17:43:47,552 [INFO]  * Debugger PIN: 119-221-918
+2025-05-06 17:48:45,669 [INFO]  * Detected change in '/home/mpam/Documents/CiscoCveScanner/celery_worker.py', reloading
+2025-05-06 17:48:45,905 [INFO]  * Restarting with stat
+2025-05-06 17:48:46,723 [WARNING]  * Debugger is active!
+2025-05-06 17:48:46,727 [INFO]  * Debugger PIN: 119-221-918
+2025-05-06 17:49:24,985 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-05-06 17:49:24,989 [INFO] [33mPress CTRL+C to quit[0m
+2025-05-06 17:49:24,990 [INFO]  * Restarting with stat
+2025-05-06 17:49:25,667 [WARNING]  * Debugger is active!
+2025-05-06 17:49:25,671 [INFO]  * Debugger PIN: 119-221-918
+2025-05-06 17:49:35,995 [INFO] 127.0.0.1 - - [06/May/2025 17:49:35] "GET / HTTP/1.1" 200 -

@@ -1,0 +1,36 @@
+version: "3.9"
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cve_scanner_web
+    ports:
+      - "5000:5000"
+    depends_on:
+      - redis
+    environment:
+      - FLASK_APP=app.py
+      - CELERY_BROKER_URL=redis://redis:6379/0
+    restart: unless-stopped
+
+  celery_worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cve_scanner_worker
+    command: celery -A celery_app worker --loglevel=info
+    depends_on:
+      - redis
+    environment:
+      - FLASK_APP=app.py
+      - CELERY_BROKER_URL=redis://redis:6379/0
+    restart: unless-stopped
+
+  redis:
+    image: redis:latest
+    container_name: cve_scanner_redis
+    restart: unless-stopped
+
+
