@@ -5,6 +5,8 @@ import threading
 from flask import Flask, request, jsonify, render_template
 from flask_socketio import SocketIO, emit
 from celery.result import AsyncResult
+from flask import Flask, render_template, request, redirect, url_for, jsonify
+from models import db, Scan, Service, Vulnerability  # Ensure these match your models file
 
 from celery_app import init_celery
 from scanner import check_vulnerabilities  # Passive scan function
@@ -124,6 +126,21 @@ def get_scan_history():
             for row in rows
         ]
         return jsonify(history)
+    
+@app.route('/scan/<int:scan_id>')
+def view_scan(scan_id):
+    scan = Scan.query.get_or_404(scan_id)
+    services = Service.query.filter_by(scan_id=scan.id).all()
+    vulnerabilities = Vulnerability.query.filter_by(scan_id=scan.id).all()
+    return render_template('result.html', scan=scan, services=services, vulnerabilities=vulnerabilities)
+
+@app.route('/history')
+def scan_history():
+    scans = Scan.query.all()
+    # Attach count of vulnerabilities for each scan
+    for scan in scans:
+        scan.vuln_count = Vulnerability.query.filter_by(scan_id=scan.id).count()
+    return render_template('history.html', scans=scans)
 
 # === SOCKET.IO EVENTS ===
 

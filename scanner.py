@@ -2,24 +2,21 @@ import os
 import json
 import sqlite3
 import subprocess
-from datetime import datetime 
+import gzip
+import logging
+import shutil
 from datetime import datetime, timezone
 from flask import Flask, render_template, request, Response, send_file
 from difflib import SequenceMatcher
 import requests
-import gzip
-import logging
-import shutil
-from celery_worker import celery_app  # <-- Add this for Celery integration
-
 import pandas as pd
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
+from celery_worker import celery_app  # Ensure this is correctly configured
 
 app = Flask(__name__)
 nvd_data = {}
 DB_FILE = 'scan_history.db'
-
 
 # ------------------ Load NVD Data ------------------
 def load_nvd_data():
@@ -34,9 +31,9 @@ def load_nvd_data():
 logging.basicConfig(filename='app.log', level=logging.INFO, format='%(asctime)s [%(levelname)s] %(message)s')
 
 def update_nvd_data():
-    logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(levelname)s] [NVD Update] %(message)s')
+    logging.info("Starting NVD data update...")
     base_url = "https://nvd.nist.gov/feeds/json/cve/1.1/"
-    years = ["2021", "2022", "2023", "2024", "2025"]  # Add more years if needed
+    years = ["2021", "2022", "2023", "2024", "2025"]
     all_cves = {"CVE_Items": []}
 
     for year in years:
@@ -67,12 +64,12 @@ def update_nvd_data():
         json.dump(all_cves, f)
 
     logging.info(f"Update complete. Total CVEs loaded: {len(all_cves['CVE_Items'])}")
-    
+
 # ------------------ CVE Matching ------------------
 def is_similar(a, b, threshold=0.6):
     return SequenceMatcher(None, a, b).ratio() > threshold
 
-def find_cves(service_name, version):
+def check_vulnerabilities(service_name, version):
     matched_cves = []
     service_name = service_name.lower().strip()
     version = version.lower().strip()
@@ -80,7 +77,6 @@ def find_cves(service_name, version):
     for cve in nvd_data.get('CVE_Items', []):
         desc = cve['cve']['description']['description_data'][0]['value'].lower()
 
-        # Exact or fuzzy match for service name or version
         if (service_name in desc and version in desc) or \
            is_similar(service_name, desc) or \
            (version and version in desc) or \
@@ -114,7 +110,6 @@ def find_cves(service_name, version):
 
     return matched_cves
 
-
 # ------------------ SQLite Utilities ------------------
 def init_db():
     conn = sqlite3.connect(DB_FILE)
@@ -130,7 +125,6 @@ def init_db():
     conn.commit()
     conn.close()
 
-
 def save_scan(target, scan_type, port_results, cve_results):
     conn = sqlite3.connect(DB_FILE)
     c = conn.cursor()
@@ -140,7 +134,6 @@ def save_scan(target, scan_type, port_results, cve_results):
     conn.commit()
     conn.close()
 
-
 def fetch_scan(scan_id):
     conn = sqlite3.connect(DB_FILE)
     c = conn.cursor()
@@ -148,7 +141,6 @@ def fetch_scan(scan_id):
     row = c.fetchone()
     conn.close()
     return row
-
 
 # ------------------ Export Utilities ------------------
 def export_txt(scan_data, output_path):
@@ -161,11 +153,9 @@ def export_txt(scan_data, output_path):
         for cve in json.loads(scan_data[4]):
             f.write(f"- {cve['id']} ({cve['severity']}): {cve['description'][:100]}...\n")
 
-
 def export_csv(scan_data, output_path):
     ports = pd.DataFrame(json.loads(scan_data[3]), columns=["Port", "Service", "Version"])
     ports.to_csv(output_path, index=False)
-
 
 def export_pdf(scan_data, output_path):
     c = canvas.Canvas(output_path, pagesize=letter)
@@ -187,12 +177,10 @@ def export_pdf(scan_data, output_path):
             y = 750
     c.save()
 
-
 # ------------------ Flask Routes ------------------
 @app.route('/')
 def index():
     return render_template('index.html')
-
 
 @app.route('/scan_stream', methods=['POST'])
 def scan_stream():
@@ -242,7 +230,7 @@ def scan_stream():
 
         for port, service, version in open_ports:
             yield f"Port {port}: {service} {version}\n"
-            matched_cves = find_cves(service, version)
+            matched_cves = check_vulnerabilities(service, version)
             cves_found.extend(matched_cves)
 
         # Save to DB
@@ -266,107 +254,59 @@ def scan_stream():
 
     return Response(generate(), mimetype='text/plain')
 
+@app.route('/scan_history')
+def scan_history():
+    conn = sqlite3.connect(DB_FILE)
+    c = conn.cursor()
+    c.execute('SELECT id, target, scan_type, timestamp FROM scans ORDER BY timestamp DESC')
+    rows = c.fetchall()
+    conn.close()
+    return render_template('history.html', scans=rows)
 
-@app.route('/download/<int:scan_id>/<string:format>')
-def download_report(scan_id, format):
-    scan_data = fetch_scan(scan_id)
-    if not scan_data:
+@app.route('/scan_result/<int:scan_id>')
+def scan_result(scan_id):
+    row = fetch_scan(scan_id)
+    if not row:
+        return "Scan not found", 404
+    return render_template('result.html', scan=row,
+                           ports=json.loads(row[3]),
+                           cves=json.loads(row[4]))
+
+@app.route('/download/<int:scan_id>/<file_type>')
+def download(scan_id, file_type):
+    row = fetch_scan(scan_id)
+    if not row:
         return "Scan not found", 404
 
-    filename = f"scan_{scan_id}.{format}"
+    filename = f"scan_{scan_id}_{file_type}.{file_type}"
     output_path = os.path.join("downloads", filename)
     os.makedirs("downloads", exist_ok=True)
 
-    if format == 'txt':
-        export_txt(scan_data, output_path)
-    elif format == 'csv':
-        export_csv(scan_data, output_path)
-    elif format == 'pdf':
-        export_pdf(scan_data, output_path)
-    else:
-        return "Invalid format", 400
-
-    return send_file(output_path, as_attachment=True)
-
-
-# ------------------ Full Scan Logic for Celery ------------------
-def run_full_scan(target, scan_type='deep', port_range='1-65535'):
-    open_ports = []
-    cves_found = []
-
-    if scan_type == 'basic':
-        cmd = ["nmap", "-Pn", "-p", port_range, target]
-    elif scan_type == 'fast':
-        cmd = ["nmap", "-Pn", "-T4", "-F", target]
-    elif scan_type == 'deep':
-        cmd = ["nmap", "-Pn", "-sV", "-p", port_range, target]
-    else:
-        return {"error": "Unknown scan type."}
-
     try:
-        result = subprocess.check_output(cmd, stderr=subprocess.STDOUT, timeout=600).decode()
-        for line in result.splitlines():
-            if "/tcp" in line and "open" in line:
-                parts = line.split()
-                port_info = parts[0]
-                service = parts[2] if len(parts) > 2 else "unknown"
-                version = parts[3] if len(parts) > 3 else ""
-                open_ports.append((port_info, service, version))
+        if file_type == "txt":
+            export_txt(row, output_path)
+        elif file_type == "csv":
+            export_csv(row, output_path)
+        elif file_type == "pdf":
+            export_pdf(row, output_path)
+        else:
+            return "Unsupported file format", 400
+        return send_file(output_path, as_attachment=True)
     except Exception as e:
-        return {"error": f"Scan failed: {e}"}
+        return f"Error generating file: {e}", 500
 
-    for port, service, version in open_ports:
-        matched_cves = find_cves(service, version)
-        cves_found.extend(matched_cves)
+@app.route('/update_nvd')
+def update_nvd():
+    try:
+        update_nvd_data()
+        load_nvd_data()
+        return "NVD data successfully updated and reloaded.", 200
+    except Exception as e:
+        return f"Failed to update NVD data: {e}", 500
 
-    save_scan(target, scan_type, open_ports, cves_found)
-    return {
-        "target": target,
-        "scan_type": scan_type,
-        "open_ports": open_ports,
-        "cves_found": cves_found,
-        "timestamp": datetime.now(timezone.utc).isoformat()
-    }
-
-
-# ------------------ Celery Task ------------------
-@celery_app.task
-def run_scan_task(target, scan_type='deep', port_range='1-65535'):
-    return run_full_scan(target, scan_type, port_range)
-
-
-# ------------------ Main ------------------
-if __name__ == "__main__":
-    load_nvd_data()
+if __name__ == '__main__':
     init_db()
-    app.run(debug=True)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    load_nvd_data()
+    app.run(debug=True, host='0.0.0.0', port=5000)
 
 

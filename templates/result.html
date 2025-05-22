@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Scan Result - {{ scan.target }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+            background-color: #f8f8f8;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        .section {
+            margin-bottom: 25px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+        }
+        .section table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .section table th, .section table td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        .section table th {
+            background-color: #f2f2f2;
+            text-align: left;
+        }
+        .back-link {
+            margin-top: 15px;
+            display: inline-block;
+            color: #007bff;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Scan Result for {{ scan.target }}</h1>
+    <p><strong>Scan ID:</strong> {{ scan.id }} | <strong>Date:</strong> {{ scan.timestamp }}</p>
+
+    <div class="section">
+        <h2>Services Detected</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Port</th>
+                    <th>Service</th>
+                    <th>Version</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for service in services %}
+                <tr>
+                    <td>{{ service.port }}</td>
+                    <td>{{ service.name }}</td>
+                    <td>{{ service.version }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>Vulnerabilities Found</h2>
+        {% if vulnerabilities %}
+        <table>
+            <thead>
+                <tr>
+                    <th>CVE ID</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for vuln in vulnerabilities %}
+                <tr>
+                    <td><a href="https://nvd.nist.gov/vuln/detail/{{ vuln.cve_id }}" target="_blank">{{ vuln.cve_id }}</a></td>
+                    <td>{{ vuln.description }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+            <p>No known vulnerabilities found.</p>
+        {% endif %}
+    </div>
+
+    <a class="back-link" href="{{ url_for('scan_history') }}">← Back to Scan History</a>
+
+</body>
+</html>

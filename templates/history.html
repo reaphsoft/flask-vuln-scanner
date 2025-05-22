@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Scan History</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #fff;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #eaeaea;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        .btn-view {
+            text-decoration: none;
+            color: white;
+            background-color: #007bff;
+            padding: 6px 12px;
+            border-radius: 4px;
+        }
+        .btn-view:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Scan History</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Scan ID</th>
+                <th>Target</th>
+                <th>Timestamp</th>
+                <th>Vulnerabilities Found</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for scan in scans %}
+            <tr>
+                <td>{{ scan.id }}</td>
+                <td>{{ scan.target }}</td>
+                <td>{{ scan.timestamp }}</td>
+                <td>{{ scan.vuln_count }}</td>
+                <td><a class="btn-view" href="{{ url_for('view_scan', scan_id=scan.id) }}">View</a></td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">No scan history available.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+</body>
+</html>
