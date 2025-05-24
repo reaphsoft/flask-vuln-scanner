@@ -44,34 +44,48 @@
 </head>
 <body>
 
-    <h1>Scan History</h1>
-
-    <table>
-        <thead>
-            <tr>
-                <th>Scan ID</th>
-                <th>Target</th>
-                <th>Timestamp</th>
-                <th>Vulnerabilities Found</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for scan in scans %}
-            <tr>
-                <td>{{ scan.id }}</td>
-                <td>{{ scan.target }}</td>
-                <td>{{ scan.timestamp }}</td>
-                <td>{{ scan.vuln_count }}</td>
-                <td><a class="btn-view" href="{{ url_for('view_scan', scan_id=scan.id) }}">View</a></td>
-            </tr>
+    <div class="container mt-4">
+        <h2 class="mb-4">Scan History</h2>
+        {% if scans and scans|length > 0 %}
+        <table class="table table-striped table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Target</th>
+                    <th>Date</th>
+                    <th>Active Services</th>
+                    <th>Passive CVEs</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for scan in scans %}
+                <tr>
+                    <td>{{ scan.id }}</td>
+                    <td>{{ scan.target }}</td>
+                    <td>{{ scan.date }}</td>
+                    <td>
+                        {% set active = scan.result['Active Scan'] if scan.result and 'Active Scan' in scan.result else [] %}
+                        <span class="badge badge-info">{{ active|length }}</span>
+                    </td>
+                    <td>
+                        {% set passive = scan.result['Passive Scan'] if scan.result and 'Passive Scan' in scan.result else [] %}
+                        <span class="badge badge-warning">{{ passive|length }}</span>
+                    </td>
+                    <td>
+                        <a href="/scan_details/{{ scan.id }}" class="btn btn-sm btn-primary">Details</a>
+                        <a href="/export/{{ scan.id }}/csv" class="btn btn-sm btn-success">CSV</a>
+                        <a href="/export/{{ scan.id }}/json" class="btn btn-sm btn-info">JSON</a>
+                        <a href="/export/{{ scan.id }}/pdf" class="btn btn-sm btn-danger">PDF</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
         {% else %}
-            <tr>
-                <td colspan="5">No scan history available.</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+        <div class="alert alert-warning">No scan history found.</div>
+        {% endif %}
+    </div>
 
 </body>
 </html>

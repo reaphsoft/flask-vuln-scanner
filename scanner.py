@@ -446,40 +446,41 @@ def check_vulnerabilities(service_name, version):
     service_name = service_name.lower().strip()
     version = version.lower().strip()
 
-    for cve in nvd_data.get('CVE_Items', []):
-        desc = cve['cve']['description']['description_data'][0]['value'].lower()
-
-        if (service_name in desc and version in desc) or \
-           is_similar(service_name, desc) or \
-           (version and version in desc) or \
-           (service_name and service_name in desc):
-
-            cve_id = cve['cve']['CVE_data_meta']['ID']
-            impact = cve.get('impact', {})
-            cvss_score = None
-            if 'baseMetricV3' in impact:
-                cvss_score = impact['baseMetricV3']['cvssV3']['baseScore']
-            elif 'baseMetricV2' in impact:
-                cvss_score = impact['baseMetricV2']['cvssV2']['baseScore']
-
-            severity = "Unknown"
-            if cvss_score is not None:
-                if cvss_score >= 9.0:
-                    severity = "Critical"
-                elif cvss_score >= 7.0:
-                    severity = "High"
-                elif cvss_score >= 4.0:
-                    severity = "Medium"
+    vuln_list = nvd_data.get('vulnerabilities', []) if isinstance(nvd_data, dict) else nvd_data
+    for entry in vuln_list:
+        cve_info = entry.get('cve', {})
+        descriptions = cve_info.get('descriptions', [])
+        desc_text = ' '.join([d.get('value', '') for d in descriptions if isinstance(d, dict)]).lower()
+        # Try to match service_name or product in description (case-insensitive, partial match)
+        if service_name and service_name in desc_text:
+            # If version is present, try to match version string or use fuzzy matching
+            if version:
+                if version in desc_text:
+                    matched_cves.append({
+                        'id': cve_info.get('id'),
+                        'description': desc_text,
+                        'severity': cve_info.get('metrics', {}).get('cvssMetricV31', [{}])[0].get('cvssData', {}).get('baseSeverity', 'unknown'),
+                        'published': cve_info.get('published', 'unknown')
+                    })
                 else:
-                    severity = "Low"
-
-            matched_cves.append({
-                'id': cve_id,
-                'description': desc,
-                'cvss_score': cvss_score,
-                'severity': severity
-            })
-
+                    # Fuzzy match: if version is similar (e.g., major.minor)
+                    for word in desc_text.split():
+                        if is_similar(version, word):
+                            matched_cves.append({
+                                'id': cve_info.get('id'),
+                                'description': desc_text,
+                                'severity': cve_info.get('metrics', {}).get('cvssMetricV31', [{}])[0].get('cvssData', {}).get('baseSeverity', 'unknown'),
+                                'published': cve_info.get('published', 'unknown')
+                            })
+                            break
+            else:
+                # If no version, match on service/product only
+                matched_cves.append({
+                    'id': cve_info.get('id'),
+                    'description': desc_text,
+                    'severity': cve_info.get('metrics', {}).get('cvssMetricV31', [{}])[0].get('cvssData', {}).get('baseSeverity', 'unknown'),
+                    'published': cve_info.get('published', 'unknown')
+                })
     return matched_cves
 
 # ------------------ SQLite Utilities ------------------

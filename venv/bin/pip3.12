@@ -1,4 +1,4 @@
-#!/home/mpam/Documents/CiscoCveScanner/venv/bin/python
+#!/home/mpam/Documents/CiscoCveScanner/venv/bin/python3
 # -*- coding: utf-8 -*-
 import re
 import sys

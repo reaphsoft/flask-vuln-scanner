@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<a href="{{ url_for('scan_history') }}">Scan History</a>
-
 <head>
     <meta charset="UTF-8">
     <title>Vulnerability Scanner</title>
@@ -71,10 +69,14 @@
                 <option value="deep">Deep</option>
             </select>
 
+            <label for="port_range">Port Range (e.g. 80,443,8000-8100):</label>
+            <input type="text" id="port_range" name="port_range" placeholder="1-65535" value="1-65535">
+
             <button type="submit" class="btn">Start Scan</button>
         </form>
 
         <div class="links">
+            <a href="{{ url_for('dashboard') }}">Dashboard</a>
             <a href="/scan_history" class="btn">View Scan History</a>
             <a href="/update_nvd" class="btn">Update NVD Dataset</a>
         </div>
@@ -90,10 +92,11 @@
             e.preventDefault();
             const target = document.getElementById("target").value;
             const scanType = document.getElementById("scan_type").value;
+            const portRange = document.getElementById("port_range").value;
 
             outputDiv.innerHTML = "Starting scan...\n";
 
-            fetch(`/scan_stream?target=${encodeURIComponent(target)}&scan_type=${scanType}`)
+            fetch(`/scan_stream?target=${encodeURIComponent(target)}&scan_type=${scanType}&port_range=${encodeURIComponent(portRange)}`)
                 .then(response => {
                     const reader = response.body.getReader();
                     const decoder = new TextDecoder();
